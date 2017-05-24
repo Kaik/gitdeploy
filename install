@@ -18,7 +18,11 @@ mv post-receive/post-receive deploy.git/hooks/post-receive
 # update permissions
 chmod +x deploy.git/hooks/post-receive
 chmod +x post-receive/master
+
 chmod +x common/compose-tree
+
+chmod +x zikula/deploy-tree
+chmod +x zikula/fix_autoload
 
 # create default working tree
 mkdir workingtree
