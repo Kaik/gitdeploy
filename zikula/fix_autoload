@@ -1,0 +1,21 @@
+#!/bin/bash
+echo "   | Zikula autoload fix started"
+if [ -z "$1" ]; then echo "   | Error: No deployment dir specified"; exit 1; fi
+DEPLOYDIR=$1
+echo "   | Fixing files... "
+cd "$DEPLOYDIR"
+pwd
+#find . -type f -exec chmod -R 644 {} \; 
+#find . -type d -exec chmod -R 755 {} \;
+#cd "vendor"
+#find . -type d -iname .git | xargs rm -rf
+#find . -type d -iname tests | xargs rm -rf
+#find . -type d -iname Tests | xargs rm -rf
+#cd "composer"
+#find . -type f -name 'autoload_*' | xargs sed -i "s_baseDir . '/src/_baseDir . '/_g" | tee -a "$LOGFILE"
+#find . -type f -name 'autoload_*' -exec sed -i 's|dirname(dirname($vendorDir))|dirname($vendorDir)|g' {} \;
+#find -type f -name 'autoload_*' | xargs sed -i "s_dirname(dirname($vendorDir))_dirname($vendorDir)_g" | tee -a "$LOGFILE"
+#find . -type f -name 'autoload_*' -exec sed -i "s|__DIR__ . '/../../..' . '/src|__DIR__ . '/../..' . '|g" {} \;
+#find . -type f -name 'autoload_*' | xargs sed -i "s|__DIR__ . '/../../..' . '/src|__DIR__ . '/../..' . '|g" | tee -a "$LOGFILE"
+
+echo "   | Files fixed in: $DEPLOYDIR"

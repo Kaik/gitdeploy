@@ -11,41 +11,24 @@ echo "   | Running branch handler master" | tee -a "$LOGFILE"
 WORK_TREE="$gitdeploy_root/workingtree"
 echo "   | Working tree: $WORK_TREE" | tee -a "$LOGFILE"
 
-# Where to deploy
-DEPLOYDIR="$HOME/public_html"
-echo "   | Deploy dir: $DEPLOYDIR" | tee -a "$LOGFILE"
+rm -rf "$WORK_TREE"/*
+echo "   | Working tree cleaned" | tee -a "$LOGFILE"
 
 GIT_WORK_TREE=$WORK_TREE git checkout master -f &>> "$LOGFILE"
-echo "   | Working tree updated.." | tee -a "$LOGFILE"
+echo "   | Working tree ready!" | tee -a "$LOGFILE"
 
-# Composer setup
-export PATH=$PATH:/opt/cpanel/composer/bin
-alias composer="php -d allow_url_fopen=1 -d detect_unicode=0 $(which composer)"
-echo "   | Composer setup done.." | tee -a "$LOGFILE"
+#
+# start your own deployment procedure for master here
+#
 
-# Composer install
-cd "$WORK_TREE" && composer install &>> $LOGFILE
-echo "   | Composer install done.." | tee -a "$LOGFILE"
+#compose working dir using commons compose tree
+sh $gitdeploy_root/common/compose-tree "$WORK_TREE"
 
-#cp -a src/* $DEPLOYDIR
-#echo "   | Files deployed online" | tee -a "$LOGFILE"
+# deploy using zikula deploy script
+sh $gitdeploy_root/zikula/deploy-tree "$WORK_TREE" "$gitdeploy_root/deploy"
 
-#cd "$DEPLOYDIR"
-#find . -type f -exec chmod -R 644 {} \; 
-#find . -type d -exec chmod -R 755 {} \;
-#cd "vendor"
-#find . -type d -iname .git | xargs rm -rf
-#find . -type d -iname tests | xargs rm -rf
-#find . -type d -iname Tests | xargs rm -rf
-#cd "composer"
-#find . -type f -name 'autoload_*' | xargs sed -i "s_baseDir . '/src/_baseDir . '/_g" | tee -a "$LOGFILE"
-#find . -type f -name 'autoload_*' -exec sed -i 's|dirname(dirname($vendorDir))|dirname($vendorDir)|g' {} \;
-#find -type f -name 'autoload_*' | xargs sed -i "s_dirname(dirname($vendorDir))_dirname($vendorDir)_g" | tee -a "$LOGFILE"
-#find . -type f -name 'autoload_*' -exec sed -i "s|__DIR__ . '/../../..' . '/src|__DIR__ . '/../..' . '|g" {} \;
-#find . -type f -name 'autoload_*' | xargs sed -i "s|__DIR__ . '/../../..' . '/src|__DIR__ . '/../..' . '|g" | tee -a "$LOGFILE"
-
-#printenv | while read -r line; do echo "   | $line"; done &>> "$LOGFILE"
-#git tag release_$NOW $target_branch
-#echo "   | Tag name     : release_$NOW" | tee -a "$LOGFILE"
 # end
 echo "   /===============================" | tee -a "$LOGFILE"
+
+#git tag release_$NOW $target_branch
+#echo "   | Tag name     : release_$NOW" | tee -a "$LOGFILE"

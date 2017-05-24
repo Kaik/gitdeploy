@@ -1,0 +1,8 @@
+#!/bin/bash
+echo "   | Deploy tree started"
+if [ -z "$1" ]; then echo "   | Error: No deployment dir specified"; exit 1; fi
+DEPLOYDIR=$1
+DEPLOYFROM=$1
+echo "   | Deploying... "
+#cp -a src/* $DEPLOYDIR
+echo "   | Files deployed to: $DEPLOYDIR"

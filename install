@@ -18,8 +18,10 @@ mv post-receive/post-receive deploy.git/hooks/post-receive
 # update permissions
 chmod +x deploy.git/hooks/post-receive
 chmod +x post-receive/master
+chmod +x common/compose-tree
 
-# create working tree
+# create default working tree
 mkdir workingtree
 
-
+# create default deploy folder
+mkdir deploy
