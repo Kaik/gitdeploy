@@ -12,7 +12,7 @@ rm -rf .git
 git init --bare deploy.git
 
 # create post-received handler
-mv post-receive/handler deploy.git/hooks/post-receive
+mv post-receive/post-receive deploy.git/hooks/post-receive
 
 # update permissions
 chmod +x deploy.git/hooks/post-receive
