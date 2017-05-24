@@ -2,9 +2,11 @@
 # timestamp
 NOW=$(date +"%Y%m%d-%H%M")
 cd ..
+gitdeploy_root=$(pwd)
 # Where to store the log information about the updates
-LOGFILE="post-receive-$NOW.log"
-
+LOGFILE="$gitdeploy_root/post-receive-$NOW.log"
+touch $LOGFILE
+cd deploy.git
 echo "   /===============================" | tee -a "$LOGFILE"
 echo "   | DEPLOYMENT"  | tee -a "$LOGFILE"
 echo "   | Date     : $NOW" | tee -a "$LOGFILE"
@@ -16,8 +18,9 @@ do
 echo "   | Old SHA: $oldrev" | tee -a "$LOGFILE"
 echo "   | New SHA: $newrev" | tee -a "$LOGFILE"
 echo "   | Branch Name: $branch" | tee -a "$LOGFILE"
-    pwd
-    [ -f post-receive/$branch ] && sh post-receive/$branch || echo "   | Branch handler $branch not found" | tee -a "$LOGFILE"
+
+[ -f $gitdeploy_root/post-receive/$branch ] && sh $gitdeploy_root/post-receive/$branch || echo "   | Branch handler $branch not found at $gitdeploy_root/post-receive/$branch"
+
 done
 # end
 echo "   /===============================" | tee -a "$LOGFILE"

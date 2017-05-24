@@ -1,6 +1,5 @@
 #!/bin/bash
-
-# load config
+#load config
 
 # check git
 
@@ -14,7 +13,12 @@ git init --bare deploy.git
 
 # create post-received handler
 mv post-receive/handler deploy.git/hooks/post-receive
+
+# update permissions
 chmod +x deploy.git/hooks/post-receive
+chmod +x post-receive/master
+
 # create working tree
 mkdir workingtree
+
 
