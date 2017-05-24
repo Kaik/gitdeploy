@@ -1,6 +1,23 @@
 #!/bin/bash
+# timestamp
+NOW=$(date +"%Y%m%d-%H%M")
+cd ..
+# Where to store the log information about the updates
+LOGFILE="post-receive-$NOW.log"
+
+echo "   /===============================" | tee -a "$LOGFILE"
+echo "   | DEPLOYMENT"  | tee -a "$LOGFILE"
+echo "   | Date     : $NOW" | tee -a "$LOGFILE"
+echo "   | Received Push Request at $( date +%F )" | tee -a "$LOGFILE"
+# read input
 while read oldrev newrev refname
 do
     branch=$(git rev-parse --symbolic --abbrev-ref $refname)
-    echo 'Branch:' $branch 
+echo "   | Old SHA: $oldrev" | tee -a "$LOGFILE"
+echo "   | New SHA: $newrev" | tee -a "$LOGFILE"
+echo "   | Branch Name: $branch" | tee -a "$LOGFILE"
+    pwd
+    [ -f post-receive/$branch ] && sh post-receive/$branch || echo "   | Branch handler $branch not found" | tee -a "$LOGFILE"
 done
+# end
+echo "   /===============================" | tee -a "$LOGFILE"
