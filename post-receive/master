@@ -22,10 +22,15 @@ echo "   | Working tree ready!" | tee -a "$LOGFILE"
 #
 
 #compose working dir using commons compose tree
-sh $gitdeploy_root/common/compose-tree "$WORK_TREE"
+sh $gitdeploy_root/common/compose-tree "$WORK_TREE" &>> "$LOGFILE"
 
+# clean dir before deploy
+#rm -rf "$gitdeploy_root"/deploy/*
 # deploy using zikula deploy script
 sh $gitdeploy_root/zikula/deploy-tree "$WORK_TREE" "$gitdeploy_root/deploy"
+
+#Zikula fix autoload
+#sh $gitdeploy_root/zikula/fix_autoload "$gitdeploy_root/deploy"
 
 # end
 echo "   /===============================" | tee -a "$LOGFILE"

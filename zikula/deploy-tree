@@ -1,8 +1,10 @@
 #!/bin/bash
-echo "   | Deploy tree started"
-if [ -z "$1" ]; then echo "   | Error: No deployment dir specified"; exit 1; fi
-DEPLOYDIR=$1
+echo "   | Zikula deploy tree started"
+if [ -z "$1" ]; then echo "   | Error: No from dir specified"; exit 1; fi
 DEPLOYFROM=$1
-echo "   | Deploying... "
-#cp -a src/* $DEPLOYDIR
+if [ -z "$2" ]; then echo "   | Error: No to dir specified"; exit 1; fi
+DEPLOYDIR=$2
+
+echo "   | Deploying from: $DEPLOYFROM"
+cp -a "$DEPLOYFROM"/src/* $DEPLOYDIR
 echo "   | Files deployed to: $DEPLOYDIR"
