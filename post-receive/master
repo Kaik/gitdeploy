@@ -22,6 +22,7 @@ echo "   | Working tree ready!" | tee -a "$LOGFILE"
 #
 
 #compose working dir using commons compose tree
+echo "   | Running composer" | tee -a "$LOGFILE"
 sh $gitdeploy_root/common/compose-tree "$WORK_TREE" &>> "$LOGFILE"
 
 # clean dir before deploy
