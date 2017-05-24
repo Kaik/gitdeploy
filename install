@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# load config
+
+# check git
+
+# check composer
+
+# remove .git
+rm -rf .git
+
+# create bare repo for incoming
+git init --bare deploy.git
+
+# create post-received handler
+
