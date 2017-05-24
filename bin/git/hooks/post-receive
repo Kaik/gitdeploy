@@ -1,0 +1,70 @@
+#!/bin/bash
+# timestamp
+NOW=$(date +"%Y%m%d-%H%M")
+# home
+# general repo path
+REPOPATH="siterepo"
+# Where to store the log information about the updates
+LOGFILE="$HOME/$REPOPATH/post-receive-$NOW.log"
+# target branch
+target_branch="master"
+# The deployed directory (the running site)
+DEPLOYDIR="$HOME/public_html"
+# path to build
+WORK_TREE="$HOME/$REPOPATH/build"
+#[ ! -d "$WORK_TREE" ] && mkdir $WORK_TREE
+
+echo "   /===============================" | tee -a "$LOGFILE"
+echo "   | DEPLOYMENT"  | tee -a "$LOGFILE"
+echo "   | Date     : $NOW" | tee -a "$LOGFILE"
+echo "   | Repo     : $REPOPATH" | tee -a "$LOGFILE"
+echo "   | Target branch: $target_branch" | tee -a "$LOGFILE"
+echo "   | Deploy dir: $DEPLOYDIR" | tee -a "$LOGFILE"
+echo "   | Work tree: $WORK_TREE" | tee -a "$LOGFILE"
+
+#GIT_DIR="/home/karolk/siterepo/site.git"
+#[ ! -d "$GIT_DIR" ] && echo "ERROR: $GIT_DIR not found!" && exit 1
+#echo "Git dir: $GIT_DIR" | tee -a "$LOGFILE"
+
+# Composer setup
+export PATH=$PATH:/opt/cpanel/composer/bin
+alias composer="php -d allow_url_fopen=1 -d detect_unicode=0 $(which composer)"
+
+## store the arguments given to the script
+read oldrev newrev refname
+
+##  Record the fact that the push has been received
+echo "   | Received Push Request at $( date +%F )" | tee -a "$LOGFILE"
+echo -e "   | Old SHA: $oldrev" | tee -a "$LOGFILE"
+echo -e "   | New SHA: $newrev" | tee -a "$LOGFILE"
+echo "   | Branch Name: $refname" | tee -a "$LOGFILE"
+GIT_WORK_TREE=$WORK_TREE git checkout $target_branch -f &>> "$LOGFILE"
+echo "   | Code updated" | tee -a "$LOGFILE"
+
+cd "$WORK_TREE" && composer install &>> $LOGFILE
+echo "   | Composer install done" | tee -a "$LOGFILE"
+
+cp -a src/* $DEPLOYDIR
+echo "   | Files deployed online" | tee -a "$LOGFILE"
+
+cd "$DEPLOYDIR"
+find . -type f -exec chmod -R 644 {} \; 
+find . -type d -exec chmod -R 755 {} \;
+cd "vendor"
+find . -type d -iname .git | xargs rm -rf
+find . -type d -iname tests | xargs rm -rf
+find . -type d -iname Tests | xargs rm -rf
+cd "composer"
+find . -type f -name 'autoload_*' | xargs sed -i "s_baseDir . '/src/_baseDir . '/_g" | tee -a "$LOGFILE"
+find . -type f -name 'autoload_*' -exec sed -i 's|dirname(dirname($vendorDir))|dirname($vendorDir)|g' {} \;
+#find -type f -name 'autoload_*' | xargs sed -i "s_dirname(dirname($vendorDir))_dirname($vendorDir)_g" | tee -a "$LOGFILE"
+find . -type f -name 'autoload_*' -exec sed -i "s|__DIR__ . '/../../..' . '/src|__DIR__ . '/../..' . '|g" {} \;
+#find . -type f -name 'autoload_*' | xargs sed -i "s|__DIR__ . '/../../..' . '/src|__DIR__ . '/../..' . '|g" | tee -a "$LOGFILE"
+
+printenv | while read -r line; do echo "   | $line"; done &>> "$LOGFILE"
+#git tag release_$NOW $target_branch
+echo "   | Tag name     : release_$NOW" | tee -a "$LOGFILE"
+# end
+echo "   /===============================" | tee -a "$LOGFILE"
+
+
