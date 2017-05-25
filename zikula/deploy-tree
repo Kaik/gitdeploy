@@ -3,8 +3,13 @@ echo "   | Zikula deploy tree started"
 if [ -z "$1" ]; then echo "   | Error: No from dir specified"; exit 1; fi
 DEPLOYFROM=$1
 if [ -z "$2" ]; then echo "   | Error: No to dir specified"; exit 1; fi
-DEPLOYDIR=$2
+DEPLOYTO=$2
 
+if [ -d "$DEPLOYTO" ]
+then
+  rm -rf "$DEPLOYTO"/*
+
+fi
 echo "   | Deploying from: $DEPLOYFROM"
-cp -a "$DEPLOYFROM"/src/* $DEPLOYDIR
-echo "   | Files deployed to: $DEPLOYDIR"
+cp -a "$DEPLOYFROM"/src/* $DEPLOYTO
+echo "   | Files deployed to: $DEPLOYTO"

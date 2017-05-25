@@ -1,40 +1,35 @@
 #!/bin/bash
-cd ..
-gitdeploy_root=$(pwd)
-cd deploy.git
+#printenv
+echo "   | Running branch handler master" | tee -a "$gitdeploy_log"
 
-# Where to store the log information about the updates
-LOGFILE="$gitdeploy_root/post-receive-$NOW.log"
-echo "   | Running branch handler master" | tee -a "$LOGFILE"
+echo "   | Working tree: $gitdeploy_workingtree" | tee -a "$gitdeploy_log"
+rm -rf "$gitdeploy_workingtree"/*
+echo "   | Working tree cleaned" | tee -a "$gitdeploy_log"
 
-# Where to store branch files
-WORK_TREE="$gitdeploy_root/workingtree"
-echo "   | Working tree: $WORK_TREE" | tee -a "$LOGFILE"
-
-rm -rf "$WORK_TREE"/*
-echo "   | Working tree cleaned" | tee -a "$LOGFILE"
-
-GIT_WORK_TREE=$WORK_TREE git checkout master -f &>> "$LOGFILE"
-echo "   | Working tree ready!" | tee -a "$LOGFILE"
+# recive push data
+echo "   | Running git!" | tee -a "$gitdeploy_log"
+GIT_WORK_TREE=$gitdeploy_workingtree git checkout master -f &>> "$gitdeploy_git_log"
+echo "   | Git done! - logfile: $gitdeploy_git_log" | tee -a "$gitdeploy_log"
 
 #
 # start your own deployment procedure for master here
+echo "   | Working tree ready!" | tee -a "$gitdeploy_log"
 #
 
 #compose working dir using commons compose tree
-echo "   | Running composer" | tee -a "$LOGFILE"
-sh $gitdeploy_root/common/compose-tree "$WORK_TREE" &>> "$LOGFILE"
+echo "   | Running common/compose-tree! - this will take a while" | tee -a "$gitdeploy_log"
+sh $gitdeploy_home/common/compose-tree "$gitdeploy_workingtree" &>> "$gitdeploy_composer_log"
+echo "   | Common/compose-tree done! - logfile: $gitdeploy_composer_log" | tee -a "$gitdeploy_log"
 
-# clean dir before deploy
-#rm -rf "$gitdeploy_root"/deploy/*
-# deploy using zikula deploy script
-sh $gitdeploy_root/zikula/deploy-tree "$WORK_TREE" "$gitdeploy_root/deploy"
 
-#Zikula fix autoload
-#sh $gitdeploy_root/zikula/fix_autoload "$gitdeploy_root/deploy"
+# deploy using zikula deploy script warning ! this will clean deploy dir before deploying
+#sh $gitdeploy_home/zikula/deploy-tree "$gitdeploy_workingtree" "$gitdeploy_deploy" | tee -a "$gitdeploy_log"
+
+#Zikula fix files
+#sh $gitdeploy_home/zikula/fix_autoload "$gitdeploy_deploy"
 
 # end
-echo "   /===============================" | tee -a "$LOGFILE"
+echo "   | Branch handler master finished!" | tee -a "$gitdeploy_log"
 
 #git tag release_$NOW $target_branch
 #echo "   | Tag name     : release_$NOW" | tee -a "$LOGFILE"

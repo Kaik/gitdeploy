@@ -1,11 +1,7 @@
 #!/bin/bash
+echo "   | Running common/compose-tree"
 if [ -z "$1" ]; then echo "   | Error: No working tree specified"; exit 1; fi
 WORK_TREE=$1
-# Composer setup
-export PATH=$PATH:/opt/cpanel/composer/bin
-alias composer="php -d allow_url_fopen=1 -d detect_unicode=0 $(which composer)"
-echo "   | Composer: setup done"
-
 # Composer install
 cd "$WORK_TREE" && composer install 
 echo "   | Composer: packages installed"

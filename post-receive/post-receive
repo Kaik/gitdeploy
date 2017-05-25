@@ -1,26 +1,27 @@
 #!/bin/bash
-# timestamp
-NOW=$(date +"%Y%m%d-%H%M")
-cd ..
-gitdeploy_root=$(pwd)
-# Where to store the log information about the updates
-LOGFILE="$gitdeploy_root/post-receive-$NOW.log"
-touch $LOGFILE
-cd deploy.git
-echo "   /===============================" | tee -a "$LOGFILE"
-echo "   | DEPLOYMENT"  | tee -a "$LOGFILE"
-echo "   | Date     : $NOW" | tee -a "$LOGFILE"
-echo "   | Received Push Request at $( date +%F )" | tee -a "$LOGFILE"
+#printenv
+gitdeploy_home=${PWD%/*}
+#load config 
+source $gitdeploy_home/config
+
+echo "   /===============================" | tee -a "$gitdeploy_log"
+echo "   | DEPLOYMENT"  | tee -a "$gitdeploy_log"
+echo "   | Date     : $NOW" | tee -a "$gitdeploy_log"
+echo "   | Received Push Request at $( date +%F )" | tee -a "$gitdeploy_log"
 # read input
 while read oldrev newrev refname
 do
     branch=$(git rev-parse --symbolic --abbrev-ref $refname)
-echo "   | Old SHA: $oldrev" | tee -a "$LOGFILE"
-echo "   | New SHA: $newrev" | tee -a "$LOGFILE"
-echo "   | Branch Name: $branch" | tee -a "$LOGFILE"
-
-[ -f $gitdeploy_root/post-receive/$branch ] && sh $gitdeploy_root/post-receive/$branch || echo "   | Branch handler $branch not found at $gitdeploy_root/post-receive/$branch"
-
+echo "   | Old SHA: $oldrev" | tee -a "$gitdeploy_log"
+echo "   | New SHA: $newrev" | tee -a "$gitdeploy_log"
+echo "   | Branch Name: $branch" | tee -a "$gitdeploy_log"
+# run branch script in current env
+if [ -f $gitdeploy_home/post-receive/$branch ]
+ then
+ 	source $gitdeploy_home/post-receive/$branch
+ else
+	echo "   | Branch handler $branch not found at $gitdeploy_home/post-receive/$branch"
+fi
 done
 # end
-echo "   /===============================" | tee -a "$LOGFILE"
+echo "   /===============================" | tee -a "$gitdeploy_log"

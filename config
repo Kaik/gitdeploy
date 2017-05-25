@@ -1,0 +1,32 @@
+# config
+echo "Config loaded from: $gitdeploy_home/config "
+
+# timestamp
+NOW=$(date +"%Y%m%d-%H%M")
+
+# define working tree
+gitdeploy_workingtree="$gitdeploy_home/workingtree"
+
+# define tmp deploy dir
+gitdeploy_deploy="$gitdeploy_home/deploy"
+
+# Where to store the log informations about the updates
+gitdeploy_logs="$gitdeploy_home/logs"
+
+# genera post recive log
+gitdeploy_log="$gitdeploy_logs/post-receive-$NOW.log"
+( [ -e "$gitdeploy_log" ] || touch "$gitdeploy_log" ) && [ ! -w "$gitdeploy_log" ] && echo cannot write to $gitdeploy_log && exit 1
+
+# git log file
+gitdeploy_git_log="$gitdeploy_logs/git-$NOW.log"
+( [ -e "$gitdeploy_git_log" ] || touch "$gitdeploy_git_log" ) && [ ! -w "$gitdeploy_git_log" ] && echo cannot write to $gitdeploy_git_log && exit 1
+
+# Composer setup
+export PATH=$PATH:/opt/cpanel/composer/bin
+alias composer="php -d allow_url_fopen=1 -d detect_unicode=0 $(which composer)"
+# composer log file needed only if composer will be used
+gitdeploy_composer_log="$gitdeploy_logs/composer-$NOW.log"
+( [ -e "$gitdeploy_log" ] || touch "$gitdeploy_log" ) && [ ! -w "$gitdeploy_log" ] && echo cannot write to $gitdeploy_log && exit 1
+
+
+
