@@ -26,12 +26,23 @@ Installation in steps
 
   1) In you account home folder on externall server execute `git clone https://github.com/Kaik/gitdeploy.git  `
   2) Once finished install with `./gitdeploy/install`
-  3) In you home repository add `git remote add live ssh://user@domain.com/home/user/gitdeploy/deploy.git`
+  3) In your local working repository add `git remote add live ssh://user@domain.com/home/user/gitdeploy/deploy.git`
   
  
 <a name="usage"></a>
 Usage
 ----------
+There are various ways how you can make use of git bare repository with git hooks for all sorts of deployments, backups.
+gitdeploy/post-receive directory contains branch handlers. You can create your own with your own branch name then when you push to this branch
+`git push live localbranch:yourbranch ` your handler will execute. 
+
+Please look into `gitdeploy/config` for configuration options
+
+Note:
+ - Because git is calling hooks only if there is a change in code you need to add empty commit and then push if you want to trigger some functionality without changing actuall code.
+`git commit --allow-empty -m 'push to execute post-receive'` 
+ - Master branch handler does not do much it is just a template for your custom handlers
+
 ```
  git push live localbranch:master                                                                                                                                     
 Enter passphrase for key 'yourserversshkey': 
