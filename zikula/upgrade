@@ -1,0 +1,8 @@
+#!/bin/bash
+echo "   | Zikula upgrade started"
+
+if [ -z "$1" ]; then echo "   | Error: No core root specified"; exit 1; fi
+core_root=$1
+echo "$core_root"
+# core 2.0 install call
+#php $core_root/bin/console zikula:upgrade

@@ -1,33 +1,27 @@
 #!/bin/bash
 #printenv
-echo "   | Running branch handler master" | tee -a "$gitdeploy_log"
+echo "   | Running branch handler $branch" | tee -a "$gitdeploy_log"
 
-echo "   | Working tree: $gitdeploy_workingtree" | tee -a "$gitdeploy_log"
-rm -rf "$gitdeploy_workingtree"/*
+if [ ! -d "$gitdeploy_workingtree/$branch" ]
+then
+mkdir -p "$gitdeploy_workingtree/$branch"
+echo "   | Working tree created: $gitdeploy_workingtree/$branch" | tee -a "$gitdeploy_log"
+fi
+echo "   | Working tree: $gitdeploy_workingtree/$branch" | tee -a "$gitdeploy_log"
+rm -rf "$gitdeploy_workingtree/$branch"/*
 echo "   | Working tree cleaned" | tee -a "$gitdeploy_log"
 
 # recive push data
 echo "   | Running git!" | tee -a "$gitdeploy_log"
-GIT_WORK_TREE=$gitdeploy_workingtree git checkout master -f &>> "$gitdeploy_git_log"
+GIT_WORK_TREE="$gitdeploy_workingtree/$branch" git checkout $branch -f &>> "$gitdeploy_logs/git-$branch-$NOW.log"
 echo "   | Git done! - logfile: $gitdeploy_git_log" | tee -a "$gitdeploy_log"
+# files are ready for deployment
+echo "   | Working tree ready! in $gitdeploy_workingtree/$branch" | tee -a "$gitdeploy_log"
 
-# 
-echo "   | Working tree ready! in $gitdeploy_workingtree" | tee -a "$gitdeploy_log"
-# start your own deployment procedure for master below
-
-# Zikula specyfic deployment
-
-#compose working dir using commons compose tree
-#echo "   | Running common/compose-tree! - this will take a while" | tee -a "$gitdeploy_log"
-#sh $gitdeploy_home/common/compose-tree "$gitdeploy_workingtree" &>> "$gitdeploy_composer_log"
-#echo "   | Common/compose-tree done! - logfile: $gitdeploy_composer_log" | tee -a "$gitdeploy_log"
-
-# deploy using zikula deploy script warning ! this will clean deploy dir before deploying
-#sh $gitdeploy_home/zikula/deploy-tree "$gitdeploy_workingtree" "$gitdeploy_deploy" | tee -a "$gitdeploy_log"
-
-#Zikula fix files
-#sh $gitdeploy_home/zikula/fix_autoload "$gitdeploy_deploy"
+# dont do anything on master
+# this is only a template file for your own branches
+# start your own deployment procedure below
 
 # end
-echo "   | Branch handler master finished!" | tee -a "$gitdeploy_log"
+echo "   | Branch handler $branch finished!" | tee -a "$gitdeploy_log"
 

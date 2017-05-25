@@ -1,0 +1,22 @@
+#!/bin/bash
+echo "   | Zikula deploy upgrade started"
+if [ -z "$1" ]; then echo "   | Error: No from dir specified"; exit 1; fi
+DEPLOYFROM=$1
+if [ -z "$2" ]; then echo "   | Error: No to dir specified"; exit 1; fi
+DEPLOYTO=$2
+
+#rm -rf "$DEPLOYTO"/*
+
+echo "   | Deploying from: $DEPLOYFROM"
+#cp -a "$DEPLOYFROM"/src/* $DEPLOYTO
+
+
+
+
+
+
+
+
+
+
+echo "   | Files deployed to: $DEPLOYTO"

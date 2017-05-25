@@ -8,7 +8,7 @@ DEPLOYTO=$2
 if [ -d "$DEPLOYTO" ]
 then
   rm -rf "$DEPLOYTO"/*
-
+echo "   | Cleaning: $DEPLOYTO"
 fi
 echo "   | Deploying from: $DEPLOYFROM"
 cp -a "$DEPLOYFROM"/src/* $DEPLOYTO
